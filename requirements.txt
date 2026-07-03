@@ -1,0 +1,12 @@
+# Scraping
+playwright==1.60.0
+
+# Google Cloud & BigQuery
+google-cloud-bigquery==3.42.0
+
+# IA (Gemini)
+#google-genai==2.8.0
+
+# Utilidades
+python-dotenv==1.2.2
+requests==2.34.2

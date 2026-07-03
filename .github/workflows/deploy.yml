@@ -1,0 +1,28 @@
+name: Deploy to Google Artifact Registry
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Autenticar en Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Configurar SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Configurar Docker para Artifact Registry
+        run: gcloud auth configure-docker southamerica-west1-docker.pkg.dev
+
+      - name: Construir y subir imagen
+        run: |
+          docker build -t southamerica-west1-docker.pkg.dev/scrapnoticias-499802/scraper-repo/scraper-app:v1 .
+          docker push southamerica-west1-docker.pkg.dev/scrapnoticias-499802/scraper-repo/scraper-app:v1

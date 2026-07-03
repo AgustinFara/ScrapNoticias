@@ -1,0 +1,14 @@
+# Ignorar entornos virtuales
+ScrapNoticias/
+venv/
+data/
+.env
+
+# Ignorar resultados de scraping y datos
+*.json
+*.csv
+*.log
+
+# Ignorar carpetas de caché
+__pycache__/
+.pytest_cache/
