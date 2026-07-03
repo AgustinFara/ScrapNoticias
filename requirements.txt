@@ -10,3 +10,5 @@ google-cloud-bigquery==3.42.0
 # Utilidades
 python-dotenv==1.2.2
 requests==2.34.2
+flake8==4.0.1
+pytest==7.4.2
