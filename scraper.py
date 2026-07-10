@@ -38,28 +38,62 @@ class GestorNoticias:
 #url: Url de la página a scrapear
 #selector: Tipo de etiqueta HTML que quiero scrapear
 #limit: Cantidad de noticias a scrapear
+
+# def tomar_titulos(page, url, selector, limit=20):
+#     print(f"Scrapeando {url}...")
+#     #Abre pagina de portal a scrapear
+#     page.goto(url, wait_until="domcontentloaded")
+#     #Espera a que cargue el javaScript del portal que genera los tags HTML
+#     page.wait_for_selector(selector, timeout=5000)
+
+#     #Recoge todos los titulos del portal    
+#     elementos = page.query_selector_all(selector)
+#     lista_noticias = []
+    
+#     # Usamos un set temporal solo para verificar duplicados mientras filtramos
+#     vistos = set()
+    
+#     for el in elementos:
+#         if len(lista_noticias) >= limit:
+#             break
+
+#         # Extraigo solo el texto, elimino espacios en blanco redundantes    
+#         titulo = el.inner_text().strip()
+        
+#         # Filtros: largo y que no esté en 'vistos'
+#         if (len(titulo) > 20 and 
+#             titulo not in vistos):
+            
+#             lista_noticias.append(titulo)
+#             vistos.add(titulo)
+            
+#     return lista_noticias
+
 def tomar_titulos(page, url, selector, limit=20):
     print(f"Scrapeando {url}...")
-    #Abre pagina de portal a scrapear
-    page.goto(url, wait_until="domcontentloaded")
-    #Espera a que cargue el javaScript del portal que genera los tags HTML
-    page.wait_for_selector(selector, timeout=5000)
+    
+    try:
+        page.goto(url, wait_until="commit", timeout=30000) 
+    except Exception as e:
+        print(f"Aviso: Tiempo de carga excedido en {url}, intentando extraer títulos igual...")
 
-    #Recoge todos los titulos del portal    
+    try:
+        page.wait_for_selector(selector, timeout=10000)
+    except Exception as e:
+        print(f"Error: No se encontró el selector {selector} en {url}")
+        return []
+ 
     elementos = page.query_selector_all(selector)
     lista_noticias = []
     
-    # Usamos un set temporal solo para verificar duplicados mientras filtramos
     vistos = set()
     
     for el in elementos:
         if len(lista_noticias) >= limit:
             break
 
-        # Extraigo solo el texto, elimino espacios en blanco redundantes    
         titulo = el.inner_text().strip()
         
-        # Filtros: largo y que no esté en 'vistos'
         if (len(titulo) > 20 and 
             titulo not in vistos):
             
