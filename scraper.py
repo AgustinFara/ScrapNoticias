@@ -148,7 +148,18 @@ def main():
     with sync_playwright() as p:
         #Lanza navegador "Headlesss"
         #Headless=True significa que el navegador no se abrirá visualmente (ahorra RAM)
-        browser = p.chromium.launch(headless=True)
+        #browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(
+            headless=True,
+            args=[
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage",  # Crucial: usa /tmp para no saturar memoria RAM
+                "--disable-accelerated-2d-canvas",
+                "--disable-gpu",
+                "--no-zygote",
+            ]
+        )
         #Abro "Pestaña" (Una página es una pestaña individual dentro del navegador)
         page = browser.new_page()
         
