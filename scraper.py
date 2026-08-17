@@ -71,6 +71,14 @@ class GestorNoticias:
 
 def tomar_titulos(page, url, selector, limit=20):
     print(f"Scrapeando {url}...")
+
+# Intercepta y bloquea llamadas a AdClick y similares
+    page.route("**/*", lambda route: route.abort() if any(
+        ad in route.request.url.lower() for ad in [
+            "adclick", "doubleclick", "googleads", "pagead", 
+            "adnxs", "taboola", "smartadserver", "eplanning"
+        ]
+    ) else route.continue_())
     
     try:
         page.goto(url, wait_until="commit", timeout=30000) 
@@ -118,6 +126,19 @@ def guardar_noticias_en_bigquery(self,rows_to_insert,portal_nombre):
     else:
         print(f"Errores en el lote: {errors}")
 
+
+def bloquear_publicidad(route):
+    url = route.request.url.lower()
+    # Dominios y redes de publicidad a interceptar
+    dominios_ads = [
+        "adclick", "doubleclick", "googleads", "pagead", 
+        "adnxs", "taboola", "smartadserver", "outbrain",
+        "eplanning", "rubiconproject"
+    ]
+    if any(ad in url for ad in dominios_ads):
+        route.abort()
+    else:
+        route.continue_()
 
 #Proceso Principal
 def main():
